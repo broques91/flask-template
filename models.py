@@ -5,16 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE']
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
-class GoogleAPI(db.Model):
-    __tablename__ = "google_api"
+class Contact(db.Model):
+    __tablename__ = "contacts"
     id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer)
-    email = db.Column(db.Integer)
+    nom = db.Column(db.String)
 
     def insert(self):
         db.session.add(self)

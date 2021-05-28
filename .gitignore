@@ -3,3 +3,6 @@ pyproject.toml
 .replit
 .idea*
 .env
+.vscode/
+__pycache__/
+models.pyc
