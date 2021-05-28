@@ -9,6 +9,7 @@ waitress = "*"
 Flask-SQLAlchemy = "*"
 Flask = "*"
 python-dotenv = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"
