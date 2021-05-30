@@ -1,15 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import os
 from flask_sqlalchemy import SQLAlchemy
 from waitress import serve
 from dotenv import load_dotenv
-from models import Contact
+from models import Contact, app
 
 load_dotenv()
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
 
 
 class Error(Exception):
@@ -28,7 +24,32 @@ def index():
 @app.route("/contacts", methods=["GET", "POST"])
 def contacts():
     contacts = Contact.query.all()
-    return jsonify(contacts)
+    json = {}
+    for contact in contacts:
+        json[contact.id] = contact.nom
+    return jsonify(json)
+
+
+@app.route(
+    "/contact/<id>",
+)
+def contact(id):
+    contact = Contact.query.filter_by(id=id).first()
+    return jsonify(id=contact.id, nom=contact.nom)
+
+
+@app.route("/contact", methods=["POST", "DELETE"])
+def create_or_delete_contact():
+    data = request.json
+    nom = data.get("nom")
+    if request.method == "POST":
+        contact = Contact(nom=nom)
+        contact.insert()
+        return jsonify(message="Contact created!")
+    elif request.method == "DELETE":
+        contact = Contact.query.filter_by(nom=nom).first()
+        contact.delete()
+        return jsonify(message="Contact deleted!")
 
 
 @app.errorhandler(Error)
